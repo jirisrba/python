@@ -1,0 +1,9 @@
+DBCITEST =
+  (DESCRIPTION =
+    (ADDRESS = (PROTOCOL = TCP)(HOST = 141.145.123.205)(PORT = 1521))
+    (CONNECT_DATA =
+      (SERVER = DEDICATED)
+      (SERVICE_NAME = db01p)
+    )
+  )
+
