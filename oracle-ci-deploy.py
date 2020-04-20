@@ -62,7 +62,7 @@ __status__ = 'Development'
 # spust SQL skript
 DEBUG = False
 
-logging.basicConfig(level=logging.WARNING)
+logging.basicConfig(level=logging.INFO)
 ##logging.basicConfig(level=logging.DEBUG)
 
 # Oracle ENV, $ORACLE_HOME, TNS admin pro SYS wallet
@@ -316,10 +316,12 @@ def execute_sql_script(dbname, connect_string, sql_script, log_file,
                   universal_newlines=True)
   session.stdin.write('''
     select
-        '|'||
-        to_char(sysdate, 'YYYY-MM-DD"T"HH24:MI:SS') ||'|'
-        || name || '|'
-          as "|timestamp|database_name|"
+      '|'
+      || to_char(sysdate, 'YYYY-MM-DD"T"HH24:MI:SS') ||'|'
+      || name ||'|'
+      || SYS_CONTEXT ('USERENV', 'SESSION_USER')
+      || '|'
+        as "|timestamp|database_name|user|"
       from v$database;
     ''' + os.linesep)
   session.stdin.write('@"{}"'.format(sql_script))
@@ -361,6 +363,7 @@ def run_db(dbname, cfg, check_prod, print_line):
 
   ora_errors = []
 
+  logging.info('user: %s', cfg['variables']['user'])
   logging.info('dbname: %s', dbname)
 
   dbinfo = get_db_info(INFP_REST_OPTIONS, dbname)
